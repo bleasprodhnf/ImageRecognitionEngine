@@ -9,7 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/image-recognition-engine/internal/model"
 	"github.com/image-recognition-engine/internal/repository"
 )
 

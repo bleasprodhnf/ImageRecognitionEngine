@@ -18,7 +18,7 @@ func TestRedisConnection(t *testing.T) {
 
 	// 创建Redis客户端
 	client := redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%s", config.RedisHost, config.RedisPort),
+		Addr:     fmt.Sprintf("%s:%s", "redis", "6379"),
 		Password: "", // 如果有密码，在此设置
 		DB:       0,  // 使用默认DB
 	})

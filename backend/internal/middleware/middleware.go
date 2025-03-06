@@ -28,8 +28,9 @@ func RegisterMiddlewares(app *gin.Engine) {
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type,Authorization,X-App-ID,X-API-Key")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With, X-App-ID, X-API-Key")
 
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(http.StatusNoContent)
@@ -77,7 +78,7 @@ func skipAuth(path string) bool {
 	}
 
 	// 登录和注册接口跳过认证
-	if path == "/api/v1/login" || path == "/api/v1/register" {
+	if path == "/api/v1/auth/login" || path == "/api/v1/auth/register" {
 		return true
 	}
 

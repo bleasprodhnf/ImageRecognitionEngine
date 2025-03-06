@@ -13,12 +13,53 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+// waitForServices 等待所有服务就绪
+func waitForServices(t *testing.T) {
+	// 等待Redis就绪
+	ctx := context.Background()
+	rdb := redis.NewClient(&redis.Options{
+		Addr: "tp-redis-1:6379",
+	})
+	defer rdb.Close()
+
+	for i := 0; i < 30; i++ {
+		_, err := rdb.Ping(ctx).Result()
+		if err == nil {
+			break
+		}
+		if i == 29 {
+			t.Fatalf("Redis connection failed after 30 attempts: %v", err)
+		}
+		time.Sleep(time.Second)
+	}
+
+	// 等待MongoDB就绪
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://tp-mongodb-1:27017"))
+	if err != nil {
+		t.Fatalf("Failed to create MongoDB client: %v", err)
+	}
+	defer client.Disconnect(ctx)
+
+	for i := 0; i < 30; i++ {
+		err = client.Ping(ctx, nil)
+		if err == nil {
+			break
+		}
+		if i == 29 {
+			t.Fatalf("MongoDB connection failed after 30 attempts: %v", err)
+		}
+		time.Sleep(time.Second)
+	}
+}
+
 // TestCachePerformance 测试缓存性能
 func TestCachePerformance(t *testing.T) {
+	waitForServices(t)
+
 	// 初始化Redis客户端
 	ctx := context.Background()
 	rdb := redis.NewClient(&redis.Options{
-		Addr: "localhost:6379",
+		Addr: "tp-redis-1:6379",
 	})
 	defer rdb.Close()
 
@@ -45,9 +86,11 @@ func TestCachePerformance(t *testing.T) {
 
 // TestDatabaseQueryPerformance 测试数据库查询性能
 func TestDatabaseQueryPerformance(t *testing.T) {
+	waitForServices(t)
+
 	// 初始化MongoDB客户端
 	ctx := context.Background()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://tp-mongodb-1:27017"))
 	assert.NoError(t, err)
 	defer client.Disconnect(ctx)
 
@@ -83,7 +126,7 @@ func TestDatabaseQueryPerformance(t *testing.T) {
 func TestIndexPerformance(t *testing.T) {
 	// 初始化MongoDB客户端
 	ctx := context.Background()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://mongodb:27017"))
 	assert.NoError(t, err)
 	defer client.Disconnect(ctx)
 

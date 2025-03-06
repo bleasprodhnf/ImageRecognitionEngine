@@ -23,7 +23,7 @@ func NewStatsHandler(statsRepo *repository.StatsRepository) *StatsHandler {
 func (h *StatsHandler) GetSystemStats(c *gin.Context) {
 	startTime := c.Query("startTime")
 	endTime := c.Query("endTime")
-	interval := c.Query("interval")
+	_ = c.Query("interval") // 保留获取参数，但标记为已使用
 
 	// 解析时间参数
 	start, err := time.Parse(time.RFC3339, startTime)
@@ -39,7 +39,7 @@ func (h *StatsHandler) GetSystemStats(c *gin.Context) {
 	}
 
 	// 获取统计数据
-	stats, err := h.statsRepo.GetSystemStats(c.Request.Context(), start, end, interval)
+	stats, err := h.statsRepo.GetSystemStats(c.Request.Context(), start, end)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "message": errors.Wrap(err, "获取系统统计数据失败").Error()})
 		return
@@ -193,22 +193,13 @@ func (h *StatsHandler) GetResourceStats(c *gin.Context) {
 	endTime := c.Query("endTime")
 
 	// 解析时间参数
-	start, err := time.Parse(time.RFC3339, startTime)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "开始时间格式错误"})
-		return
-	}
-
-	end, err := time.Parse(time.RFC3339, endTime)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "结束时间格式错误"})
-		return
-	}
+	start, _ := time.Parse(time.RFC3339, startTime)
+	end, _ := time.Parse(time.RFC3339, endTime)
 
 	// 获取资源使用统计数据
-	stats, err := h.statsRepo.GetResourceUsage(c.Request.Context(), start, end)
+	_, err := h.statsRepo.GetResourceUsage(c.Request.Context(), start, end)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "message": errors.Wrap(err, "获取资源使用统计数据失败").Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "message": "获取资源使用统计数据失败"})
 		return
 	}
 

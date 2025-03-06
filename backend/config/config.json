@@ -39,6 +39,8 @@
   "storage": {
     "type": "local",
     "localPath": "./storage",
+    "maxSize": 50,
+    "timeout": 300,
     "s3": {
       "endpoint": "",
       "bucket": "",

@@ -12,6 +12,7 @@ type SystemStats struct {
 	TotalRequests int64             `bson:"total_requests" json:"totalRequests"`
 	TotalUsers    int64             `bson:"total_users" json:"totalUsers"`
 	ActiveUsers   int64             `bson:"active_users" json:"activeUsers"`
+	Timestamp     time.Time         `bson:"timestamp" json:"timestamp"`
 	Date          time.Time         `bson:"date" json:"date"`
 	CreatedAt     time.Time         `bson:"created_at" json:"createdAt"`
 }

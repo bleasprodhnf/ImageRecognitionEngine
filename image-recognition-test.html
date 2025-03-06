@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>u56feu50cfu8bc6u522bu5f15u64ce - u6d4bu8bd5</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result, #loginResult {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            white-space: pre-wrap;
+            border-radius: 4px;
+        }
+        .preview-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .image-preview {
+            max-width: 300px;
+            max-height: 300px;
+            border: 1px solid #ddd;
+            padding: 5px;
+        }
+        .result-container {
+            flex: 1;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>u56feu50cfu8bc6u522bu5f15u64ce - u6d4bu8bd5</h1>
+    
+    <div class="container">
+        <!-- u767bu5f55u5361u7247 -->
+        <div class="card" id="loginCard">
+            <h2>u7b2cu4e00u6b65: u767bu5f55u83b7u53d6Token</h2>
+            <div class="form-group">
+                <label for="username">u7528u6237u540d:</label>
+                <input type="text" id="username" value="admin">
+            </div>
+            <div class="form-group">
+                <label for="password">u5bc6u7801:</label>
+                <input type="password" id="password" value="password">
+            </div>
+            <button onclick="login()">u767bu5f55</button>
+            <div id="loginResult" class="hidden"></div>
+        </div>
+
+        <!-- u56feu50cfu8bc6u522bu5361u7247 -->
+        <div class="card hidden" id="recognitionCard">
+            <h2>u7b2cu4e8cu6b65: u56feu50cfu8bc6u522b</h2>
+            <div class="form-group">
+                <label for="imageFile">u9009u62e9u56feu7247:</label>
+                <input type="file" id="imageFile" accept="image/*" onchange="previewImage(event)">
+            </div>
+            <div class="preview-container">
+                <div>
+                    <h3>u56feu7247u9884u89c8</h3>
+                    <img id="imagePreview" class="image-preview" src="" alt="u9884u89c8u56feu7247">
+                </div>
+                <div class="result-container">
+                    <h3>u8bc6u522bu7ed3u679c</h3>
+                    <div id="result">u8bf7u9009u62e9u56feu7247u5e76u70b9u51fbu8bc6u522bu6309u94ae</div>
+                </div>
+            </div>
+            <button onclick="recognizeImage()" id="recognizeBtn" disabled>u8bc6u522bu56feu7247</button>
+        </div>
+    </div>
+
+    <script>
+        let token = '';
+        const apiBaseUrl = 'http://localhost:8080';
+
+        // u767bu5f55u51fdu6570
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const loginResult = document.getElementById('loginResult');
+            
+            loginResult.textContent = 'u6b63u5728u767bu5f55...';
+            loginResult.classList.remove('hidden');
+            
+            try {
+                const response = await fetch(`${apiBaseUrl}/api/v1/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username,
+                        password
+                    })
+                });
+                
+                const data = await response.json();
+                loginResult.textContent = JSON.stringify(data, null, 2);
+                
+                if (data.code === 200 && data.data && data.data.token) {
+                    token = data.data.token;
+                    loginResult.textContent += '\n\nu767bu5f55u6210u529f! u73b0u5728u53efu4ee5u8fdbu884cu56feu50cfu8bc6u522bu4e86u3002';
+                    
+                    // u663eu793au56feu50cfu8bc6u522bu5361u7247
+                    document.getElementById('recognitionCard').classList.remove('hidden');
+                } else {
+                    loginResult.textContent += '\n\nu767bu5f55u5931u8d25! u8bf7u68c0u67e5u7528u6237u540du548cu5bc6u7801u3002';
+                }
+            } catch (error) {
+                loginResult.textContent = `u8bf7u6c42u51fau9519: ${error.message}\n\nu53efu80fdu7684u539fu56e0:
+1. u540eu7aefu670du52a1u672au542fu52a8
+2. u8de8u57dfu8bf7u6c42u88abu963bu6b62
+3. u7f51u7edcu8fdeu63a5u95eeu9898`;
+            }
+        }
+
+        // u9884u89c8u56feu7247
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imagePreview').src = e.target.result;
+                    document.getElementById('recognizeBtn').disabled = false;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // u8bc6u522bu56feu7247
+        async function recognizeImage() {
+            const fileInput = document.getElementById('imageFile');
+            const resultDiv = document.getElementById('result');
+            
+            if (!fileInput.files || fileInput.files.length === 0) {
+                resultDiv.textContent = 'u8bf7u9009u62e9u56feu7247';
+                return;
+            }
+            
+            if (!token) {
+                resultDiv.textContent = 'u8bf7u5148u767bu5f55u83b7u53d6Token';
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('image', file);
+            
+            resultDiv.textContent = 'u6b63u5728u8bc6u522bu56feu7247...';
+            
+            try {
+                const response = await fetch(`${apiBaseUrl}/api/v1/client/recognize`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                resultDiv.textContent = `u8bf7u6c42u51fau9519: ${error.message}\n\nu53efu80fdu7684u539fu56e0:
+1. u540eu7aefu670du52a1u672au542fu52a8
+2. Tokenu65e0u6548u6216u8fc7u671f
+3. u8de8u57dfu8bf7u6c42u88abu963bu6b62
+4. u56feu7247u683cu5f0fu6216u5927u5c0fu4e0du7b26u5408u8981u6c42`;
+            }
+        }
+    </script>
+</body>
+</html>

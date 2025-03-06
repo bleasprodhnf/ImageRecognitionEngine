@@ -18,30 +18,41 @@ services:
       - mysql
       - redis
 
-#  backend:
-#    build:
-#      context: ./backend
-#      dockerfile: Dockerfile
-#    ports:
-#      - "8080:8080"
-#    environment:
-#      - MONGO_URI=mongodb://mongodb:27017/image_recognition
-#      - MYSQL_DSN=root:password@tcp(mysql:3306)/image_recognition
-#      - REDIS_ADDR=redis:6379
-#      - JWT_SECRET=your-secret-key
-#    depends_on:
-#      - mongodb
-#      - mysql
-#      - redis
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      # 挂载模型目录
+      - ./models:/root/models
+      # 挂载上传文件目录
+      - ./uploads:/root/uploads
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/image_recognition
+      - MYSQL_DSN=root:password@tcp(mysql:3306)/image_recognition
+      - REDIS_ADDR=redis:6379
+      - JWT_SECRET=your-secret-key
+      - MODEL_BASE_PATH=/root/models
+      - STORAGE_LOCAL_PATH=/root/uploads
+      - SERVER_PORT=8080
+      - SERVER_MODE=production
+    depends_on:
+      - mongodb
+      - mysql
+      - redis
 
   frontend:
     build:
       context: .
       dockerfile: Dockerfile.frontend
     ports:
-      - "8081:80"
-#    depends_on:
-#      - backend
+      - "80:80"
+    environment:
+      - VITE_API_BASE_URL=/api
+    depends_on:
+      - backend
 
   mongodb:
     image: mongo:5.0
@@ -49,6 +60,8 @@ services:
       - "27017:27017"
     volumes:
       - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=image_recognition
 
   mysql:
     image: mysql:8.0
@@ -59,11 +72,15 @@ services:
       - MYSQL_DATABASE=image_recognition
     volumes:
       - mysql_data:/var/lib/mysql
+      # 初始化SQL脚本
+      - ./init-scripts:/docker-entrypoint-initdb.d
 
   redis:
     image: redis:6.0
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
 
 #  prometheus:
 #    image: prom/prometheus:latest
@@ -84,3 +101,4 @@ services:
 volumes:
   mongodb_data:
   mysql_data:
+  redis_data:

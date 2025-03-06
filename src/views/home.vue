@@ -68,7 +68,7 @@
           <h3>上传图片进行识别</h3>
           <el-upload
             class="image-uploader"
-            action="http://localhost:3000/v1/image/upload"
+            action="http://localhost:8080/api/v1/client/recognize"
             :headers="{
               'X-App-ID': 'demo_app_id',
               'X-API-Key': 'demo_api_key'
@@ -78,12 +78,12 @@
             :before-upload="handleImageChange"
             :on-success="handleUploadSuccess"
             :on-error="handleUploadError"
-            accept="image/jpeg,image/png">
+            accept="image/jpeg,image/png,image/gif">
             <img v-if="imageUrl" :src="imageUrl" class="preview-image" />
             <div v-else class="upload-placeholder">
               <el-icon class="upload-icon"><Plus /></el-icon>
               <div class="upload-text">点击上传图片</div>
-              <div class="upload-hint">支持jpg、png格式，大小不超过10MB</div>
+              <div class="upload-hint">支持jpg、png、gif格式，大小不超过10MB</div>
             </div>
           </el-upload>
           <el-button type="primary" :disabled="!imageUrl" @click="recognizeImage">开始识别</el-button>
@@ -265,32 +265,49 @@ const applicationScenarios = [
 const imageUrl = ref('');
 const recognitionResult = ref(null);
 const isRecognizing = ref(false);
+const uploadedFile = ref(null);
 
 // 处理图片上传
 const handleImageChange = (file) => {
-  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+  // 验证文件类型
+  const isJPG = file.type === 'image/jpeg';
+  const isPNG = file.type === 'image/png';
+  const isGIF = file.type === 'image/gif';
+  
+  if (!isJPG && !isPNG && !isGIF) {
+    ElMessage.error('上传图片只能是 JPG/PNG/GIF 格式!');
+    return false;
+  }
+  
+  // 验证文件大小
   const isLt10M = file.size / 1024 / 1024 < 10;
-
-  if (!isJpgOrPng) {
-    ElMessage.error('只能上传JPG或PNG格式的图片!');
-    return false;
-  }
   if (!isLt10M) {
-    ElMessage.error('图片大小不能超过10MB!');
+    ElMessage.error('上传图片大小不能超过 10MB!');
     return false;
   }
+  
+  // 保存文件对象以便在上传成功后使用
+  uploadedFile.value = file;
   return true;
 };
 
 // 上传成功处理
 const handleUploadSuccess = (response) => {
-  imageUrl.value = response.data.url;
-  recognitionResult.value = null;
-  ElMessage.success('上传成功');
+  // 根据后端返回的数据结构调整
+  if (response.code === 200) {
+    // 使用本地图片URL，因为我们已经上传了图片
+    imageUrl.value = URL.createObjectURL(uploadedFile.value);
+    // 存储识别结果
+    recognitionResult.value = response.data;
+    ElMessage.success('上传并识别成功');
+  } else {
+    ElMessage.error(response.message || '上传失败');
+  }
 };
 
 // 上传失败处理
 const handleUploadError = (err) => {
+  console.error('上传错误:', err);
   const errorMessage = err.response?.data?.message || '上传失败，请检查网络连接或稍后重试';
   ElMessage.error(errorMessage);
   imageUrl.value = '';

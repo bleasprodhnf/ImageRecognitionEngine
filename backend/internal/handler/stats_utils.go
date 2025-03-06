@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"time"
+	"fmt"
 
 	"github.com/image-recognition-engine/internal/model"
 )

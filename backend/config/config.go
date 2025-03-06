@@ -85,18 +85,20 @@ type JWTConfig struct {
 
 // StorageConfig 存储配置
 type StorageConfig struct {
-	Type      string `json:"type" validate:"storage_type"` // local, s3, oss
-	LocalPath string `json:"localPath"`
-	S3        S3Config `json:"s3"`
+    Type      string    `json:"type" validate:"required,oneof=local s3"`
+    LocalPath string    `json:"localPath"`
+    S3        S3Config  `json:"s3"`
+    MaxSize   int64     `json:"maxSize" validate:"required"` // 文件大小限制(MB)
+    Timeout   int       `json:"timeout" validate:"required"` // 上传超时时间(秒)
 }
 
-// S3Config S3配置
+// S3Config S3存储配置
 type S3Config struct {
-	Endpoint  string `json:"endpoint"`
-	Bucket    string `json:"bucket"`
-	AccessKey string `json:"accessKey"`
-	SecretKey string `json:"secretKey"`
-	Region    string `json:"region"`
+    Endpoint  string `json:"endpoint"`
+    Bucket    string `json:"bucket"`
+    AccessKey string `json:"accessKey"`
+    SecretKey string `json:"secretKey"`
+    Region    string `json:"region"`
 }
 
 // ModelConfig 模型配置

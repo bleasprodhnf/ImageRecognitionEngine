@@ -16,8 +16,8 @@ COPY . .
 # 安装特定版本的 Rollup，使用 --no-optional 避免平台特定的依赖问题
 RUN npm install rollup@3.29.4 --save-dev --no-optional
 
-# 构建应用
-RUN npm run build
+# 使用生产模式构建应用
+RUN npm run build -- --mode production
 
 # 生产环境
 FROM nginx:stable-alpine
