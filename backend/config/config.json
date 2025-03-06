@@ -1,0 +1,55 @@
+{
+  "server": {
+    "host": "0.0.0.0",
+    "port": 8080,
+    "mode": "development",
+    "readTimeout": 60,
+    "writeTimeout": 60
+  },
+  "database": {
+    "mysql": {
+      "host": "localhost",
+      "port": 3306,
+      "username": "root",
+      "password": "password",
+      "database": "image_recognition",
+      "maxOpen": 100,
+      "maxIdle": 10,
+      "lifetime": 3600
+    },
+    "mongo": {
+      "uri": "mongodb://localhost:27017",
+      "database": "image_recognition",
+      "username": "",
+      "password": "",
+      "maxPool": 100
+    }
+  },
+  "redis": {
+    "host": "localhost",
+    "port": 6379,
+    "password": "",
+    "db": 0,
+    "poolSize": 100
+  },
+  "jwt": {
+    "secret": "your-secret-key-here",
+    "expiration": 24
+  },
+  "storage": {
+    "type": "local",
+    "localPath": "./storage",
+    "s3": {
+      "endpoint": "",
+      "bucket": "",
+      "accessKey": "",
+      "secretKey": "",
+      "region": ""
+    }
+  },
+  "model": {
+    "basePath": "./models",
+    "defaultModel": "v1.0.0",
+    "maxConcurrent": 200
+  }
+}

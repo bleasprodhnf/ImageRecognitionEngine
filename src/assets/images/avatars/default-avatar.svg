@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- 头部背景 -->
+  <circle cx="100" cy="100" r="100" fill="#409EFF"/>
+  
+  <!-- 头像轮廓 -->
+  <circle cx="100" cy="85" r="50" fill="#FFFFFF"/>
+  
+  <!-- 身体轮廓 -->
+  <path d="M100 145 C40 145 25 185 25 200 L175 200 C175 185 160 145 100 145Z" fill="#FFFFFF"/>
+  
+  <!-- 装饰细节 -->
+  <circle cx="100" cy="85" r="48" fill="#409EFF"/>
+  <path d="M100 135 C45 135 35 180 35 200 L165 200 C165 180 155 135 100 135Z" fill="#409EFF"/>
+</svg>

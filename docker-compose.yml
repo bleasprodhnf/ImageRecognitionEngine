@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.test
+    volumes:
+      - ./backend/test-results:/app/test-results
+    environment:
+      - CONFIG_ENCRYPTION_KEY=test-key
+      - SERVER_MODE=test
+      - MONGO_URI=mongodb://mongodb:27017/test
+      - MYSQL_DSN=root:password@tcp(mysql:3306)/test
+      - REDIS_ADDR=redis:6379
+    depends_on:
+      - mongodb
+      - mysql
+      - redis
+
+#  backend:
+#    build:
+#      context: ./backend
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8080:8080"
+#    environment:
+#      - MONGO_URI=mongodb://mongodb:27017/image_recognition
+#      - MYSQL_DSN=root:password@tcp(mysql:3306)/image_recognition
+#      - REDIS_ADDR=redis:6379
+#      - JWT_SECRET=your-secret-key
+#    depends_on:
+#      - mongodb
+#      - mysql
+#      - redis
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "8081:80"
+#    depends_on:
+#      - backend
+
+  mongodb:
+    image: mongo:5.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=image_recognition
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:6.0
+    ports:
+      - "6379:6379"
+
+#  prometheus:
+#    image: prom/prometheus:latest
+#    ports:
+#      - "9090:9090"
+#    volumes:
+#      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+#
+#  grafana:
+#    image: grafana/grafana:latest
+#    ports:
+#      - "3000:3000"
+#    environment:
+#      - GF_SECURITY_ADMIN_PASSWORD=admin
+#    depends_on:
+#      - prometheus
+
+volumes:
+  mongodb_data:
+  mysql_data:

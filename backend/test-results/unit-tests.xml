@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="6" failures="0" errors="28" time="1.601340">
+	<testsuite tests="0" failures="0" time="0.000000" name="github.com/image-recognition-engine/config" timestamp="2025-03-06T01:34:45Z">
+		<properties>
+			<property name="go.version" value="go1.20.14 linux/amd64"></property>
+		</properties>
+	</testsuite>
+	<testsuite tests="6" failures="0" time="0.000000" name="github.com/image-recognition-engine/internal/cache" timestamp="2025-03-06T01:34:45Z">
+		<properties>
+			<property name="go.version" value="go1.20.14 linux/amd64"></property>
+		</properties>
+		<testcase classname="github.com/image-recognition-engine/internal/cache" name="TestRedisCache/Test_Set" time="0.000000"></testcase>
+		<testcase classname="github.com/image-recognition-engine/internal/cache" name="TestRedisCache/Test_Exists" time="0.000000"></testcase>
+		<testcase classname="github.com/image-recognition-engine/internal/cache" name="TestRedisCache/Test_Get" time="0.000000"></testcase>
+		<testcase classname="github.com/image-recognition-engine/internal/cache" name="TestRedisCache/Test_Delete" time="0.000000"></testcase>
+		<testcase classname="github.com/image-recognition-engine/internal/cache" name="TestRedisCache/Test_GetStats" time="0.000000"></testcase>
+		<testcase classname="github.com/image-recognition-engine/internal/cache" name="TestRedisCache" time="0.010000"></testcase>
+	</testsuite>
+	<testsuite tests="0" failures="0" time="0.000000" name="github.com/image-recognition-engine/internal/database" timestamp="2025-03-06T01:34:45Z">
+		<properties>
+			<property name="go.version" value="go1.20.14 linux/amd64"></property>
+		</properties>
+	</testsuite>
+	<testsuite tests="0" failures="0" time="0.000000" name="github.com/image-recognition-engine/internal/errors" timestamp="2025-03-06T01:34:45Z">
+		<properties>
+			<property name="go.version" value="go1.20.14 linux/amd64"></property>
+		</properties>
+	</testsuite>
+	<testsuite tests="0" failures="0" time="0.000000" name="github.com/image-recognition-engine/internal/handler/auth" timestamp="2025-03-06T01:34:45Z">
+		<properties>
+			<property name="go.version" value="go1.20.14 linux/amd64"></property>
+		</properties>
+	</testsuite>
+	<testsuite tests="0" failures="0" time="0.000000" name="github.com/image-recognition-engine/internal/handler/common" timestamp="2025-03-06T01:34:45Z">
+		<properties>
+			<property name="go.version" value="go1.20.14 linux/amd64"></property>
+		</properties>
+	</testsuite>
+	<testsuite tests="0" failures="0" time="0.000000" name="github.com/image-recognition-engine/internal/model" timestamp="2025-03-06T01:34:45Z">
+		<properties>
+			<property name="go.version" value="go1.20.14 linux/amd64"></property>
+		</properties>
+	</testsuite>
+	<testsuite tests="0" failures="0" time="0.000000" name="github.com/image-recognition-engine/internal/queue" timestamp="2025-03-06T01:34:45Z">
+		<properties>
+			<property name="go.version" value="go1.20.14 linux/amd64"></property>
+		</properties>
+	</testsuite>
+	<testsuite tests="0" failures="0" time="0.000000" name="github.com/image-recognition-engine/internal/repository" timestamp="2025-03-06T01:34:45Z">
+		<properties>
+			<property name="go.version" value="go1.20.14 linux/amd64"></property>
+		</properties>
+	</testsuite>
+	<testsuite tests="0" failures="0" time="0.000000" name="github.com/image-recognition-engine/internal/repository/mongodb" timestamp="2025-03-06T01:34:45Z">
+		<properties>
+			<property name="go.version" value="go1.20.14 linux/amd64"></property>
+		</properties>
+	</testsuite>
+</testsuites>

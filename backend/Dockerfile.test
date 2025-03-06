@@ -1,0 +1,36 @@
+# 使用官方Go镜像作为测试环境
+FROM golang:1.20-alpine
+
+# 设置工作目录
+WORKDIR /app
+
+# 安装git和构建工具
+RUN apk add --no-cache git build-base
+
+# 复制go.mod和go.sum文件
+COPY go.mod go.sum ./
+
+# 下载依赖
+RUN go mod download
+
+# 复制源代码
+COPY . .
+
+# 安装测试工具
+RUN go install github.com/golang/mock/mockgen@v1.6.0
+RUN go install gotest.tools/gotestsum@latest
+
+# 设置环境变量
+ENV CONFIG_PATH=/app/config/config.json
+ENV CONFIG_ENCRYPTION_KEY=test-key
+ENV SERVER_MODE=test
+
+# 运行测试
+CMD ["sh", "-c", "\
+    echo 'Running unit tests...' && \
+    gotestsum --format pkgname --junitfile /app/test-results/unit-tests.xml -- -v ./... && \
+    echo 'Running integration tests...' && \
+    gotestsum --format pkgname --junitfile /app/test-results/integration-tests.xml -- -v -tags=integration ./... && \
+    echo 'Running end-to-end tests...' && \
+    gotestsum --format pkgname --junitfile /app/test-results/e2e-tests.xml -- -v -tags=e2e ./...\
+"]

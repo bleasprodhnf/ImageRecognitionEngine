@@ -1,0 +1,23 @@
+# 使用官方 Node.js 镜像作为基础镜像
+FROM node:18-alpine
+
+# 设置工作目录
+WORKDIR /app
+
+# 复制 package.json 和 package-lock.json
+COPY package*.json ./
+
+# 安装依赖，避免可选依赖
+RUN npm install --no-optional
+
+# 安装 Vue 语法检查工具
+RUN npm install -g @vue/compiler-sfc
+
+# 复制项目文件
+COPY . .
+
+# 创建一个简单的脚本来检查 Vue 文件语法
+RUN echo '#!/bin/sh\nfind ./src -name "*.vue" -print0 | xargs -0 -n1 sh -c "echo Checking \$0 && cat \$0 | node -e \"try { require('@vue/compiler-sfc').parse(require('fs').readFileSync(0, 'utf-8')); console.log('✓ Valid'); } catch(e) { console.error('❌ Error:', e.message, 'at line', e.loc?.start?.line || 'unknown'); process.exit(1); }\"" || exit 1' > /app/check-vue-syntax.sh && chmod +x /app/check-vue-syntax.sh
+
+# 运行语法检查脚本
+CMD ["/app/check-vue-syntax.sh"]
